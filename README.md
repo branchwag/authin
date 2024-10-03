@@ -7,3 +7,9 @@ To run the project:
 ```
 go run *.go
 ```
+
+
+Endpoint structure: 
+```
+http://localhost:4242/register
+```

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 type Login struct {
@@ -16,22 +17,22 @@ var users = map[string]Login{}
 
 func register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		er := http.StatusMethodNotAllowed
-		http.Error(w, "Invalid method", er)
+		err := http.StatusMethodNotAllowed
+		http.Error(w, "Invalid method", err)
 		return
 	}
 
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	if len(username) < 8 || len(password) < 8 {
-		er := http.StatusNotAcceptable
-		http.Error(w, "Invalid username/password", er)
+		err := http.StatusNotAcceptable
+		http.Error(w, "Invalid username/password", err)
 		return
 	}
 
 	if _, ok := users[username]; ok {
-		er := http.StatusConflict
-		http.Error(w, "User already exists", er)
+		err := http.StatusConflict
+		http.Error(w, "User already exists", err)
 		return
 	}
 
@@ -44,6 +45,44 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		err := http.StatusMethodNotAllowed
+		http.Error(w, "Invalid request method", err)
+		return
+	}
+
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	user, ok := users[username]
+	if !ok || !CheckPasswordHash(password, user.HashedPassword) {
+		err := http.StatusUnauthorized
+		http.Error(w, "Invalid username or password", err)
+		return
+	}
+
+	sessionToken := generateToken(32)
+	csrfToken := generateToken(32)
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_token",
+		Value:    sessionToken,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HttpOnly: true,
+	})
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "csrf_token",
+		Value:    csrfToken,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HttpOnly: false,
+	})
+
+	user.SessionToken = sessionToken
+	user.CSRFToken = csrfToken
+	users[username] = user
+
+	fmt.Fprintln(w, "Login successful!")
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {

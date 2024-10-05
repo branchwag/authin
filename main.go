@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -106,7 +107,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	})
 
 	username := r.FormValue("username")
-	user, _ := users[username]
+	user := users[username]
 	user.SessionToken = ""
 	user.CSRFToken = ""
 	users[username] = user
@@ -131,7 +132,23 @@ func protected(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "CSRF validation successful! Welcome, %s", username)
 }
 
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		data, err := os.ReadFile("index.html")
+		if err != nil {
+			http.Error(w, "Could not load index.html", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
+	http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+}
+
 func main() {
+	http.HandleFunc("/", serveIndex)
 	http.HandleFunc("/register", register)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)

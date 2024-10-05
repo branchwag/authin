@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication App</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Optional, for external CSS -->
+    <script defer src="scripts.js"></script> <!-- Optional, for external JS -->
+</head>
+<body>
+    <header>
+        <h1>Welcome</h1>
+        <nav>
+            <ul>
+                <li><a href="#register">Register</a></li>
+                <li><a href="#login">Login</a></li>
+                <li><a href="#logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Registration Form -->
+        <section id="register">
+            <h2>Register</h2>
+            <form action="/register" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required minlength="8" />
+                <br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required minlength="8" />
+                <br>
+                <button type="submit">Register</button>
+            </form>
+        </section>
+
+        <!-- Login Form -->
+        <section id="login">
+            <h2>Login</h2>
+            <form action="/login" method="POST">
+                <label for="login-username">Username:</label>
+                <input type="text" id="login-username" name="username" required />
+                <br>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" required />
+                <br>
+                <button type="submit">Login</button>
+            </form>
+        </section>
+
+        <!-- Logout Form -->
+        <section id="logout">
+            <h2>Logout</h2>
+            <form action="/logout" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+        </section>
+
+        <!-- Protected Page Section -->
+        <section id="protected">
+            <h2>Protected Page</h2>
+            <p>Once logged in, you'll be able to see protected content here.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Authentication App. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
+

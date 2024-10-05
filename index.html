@@ -24,35 +24,36 @@
 
     </header>
         </br>
-    <main>
+    <main class="flex justify-between p-8">
         <!-- Registration Form -->
-        <section id="register">
-            <h2>Register</h2>
+        <section id="register" class="w-1/2 p-4 bg-gray-900 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-4">Register</h2>
             <form action="/register" method="POST">
-                <label for="username">Username:</label>
+                <label for="username" class="block text-sm font-medium">Username:</label>
                 <input type="text" id="username" name="username" required minlength="8" />
                 <br>
-                <label for="password">Password:</label>
+                <label for="password" class="block text-sm font-medium">Password:</label>
                 <input type="password" id="password" name="password" required minlength="8" />
                 <br>
-                <button type="submit">Register button</button>
+                <button type="submit" class="bg-gray-100 text-black rounded hover:bg-gray-500">Register</button>
             </form>
         </section>
             </br>
         <!-- Login Form -->
-        <section id="login">
-            <h2>Login</h2>
+        <section id="login" class="w-1/2 p-4 bg-gray-900 rounded-lg shadow-lg">
+            <h2 class="text-xl font-semibold mb-4">Login</h2>
             <form action="/login" method="POST">
-                <label for="login-username">Username:</label>
+                <label for="login-username" class="block text-sm font-medium">Username:</label>
                 <input type="text" id="login-username" name="username" required />
                 <br>
-                <label for="login-password">Password:</label>
+                <label for="login-password" class="block text-sm font-medium">Password:</label>
                 <input type="password" id="login-password" name="password" required />
                 <br>
-                <button type="submit">Login button</button>
+                <button type="submit" class="bg-gray-100 text-black rounded hover:bg-gray-500">Login</button>
             </form>
         </section>
             </br>
+        </main>
         <!-- Logout Form -->
         <section id="logout">
             <h2>Logout</h2>
@@ -66,7 +67,6 @@
             <h2>Protected Page</h2>
             <p>Once logged in, you'll be able to see protected content here.</p>
         </section>
-    </main>
         </br>
     <footer>
         <p>&copy; 2024 Authentication App. All Rights Reserved.</p>

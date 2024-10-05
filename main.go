@@ -95,13 +95,13 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_token",
 		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
+		Expires:  time.Now().Add(24 * time.Hour),
 		HttpOnly: true,
 	})
 	http.SetCookie(w, &http.Cookie{
 		Name:     "csrf_token",
 		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
+		Expires:  time.Now().Add(24 * time.Hour),
 		HttpOnly: false,
 	})
 

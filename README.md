@@ -18,7 +18,7 @@ Sample usage:
 1. Register a user  
 2. Login using that same username and password:  
 ```
-$ curl -X POST http://localhost:4242/login -d "username=issausername&password=issapassword" -c cookies.txt
+curl -X POST http://localhost:4242/login -d "username=issausername&password=issapassword" -c cookies.txt
 Login successful!
 ```
 3. Visit the protected endpoint using CSRF token from the cookie and user:  

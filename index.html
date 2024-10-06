@@ -28,15 +28,16 @@
         <!-- Registration Form -->
         <section id="register" class="mx-2 w-1/2 p-4 bg-gray-900 rounded-lg shadow-lg">
             <h2 class="text-xl font-semibold mb-4">Register</h2>
-            <form action="/register" method="POST">
+            <form id="registerForm">
                 <label for="username" class="block text-sm font-medium">Username:</label>
-                <input type="text" id="username" name="username" required minlength="8" />
+                <input type="text" id="username" name="username" class="text-black" required minlength="8" />
                 <br>
                 <label for="password" class="block text-sm font-medium">Password:</label>
-                <input type="password" id="password" name="password" required minlength="8" />
+                <input type="password" id="password" name="password" class="text-black" required minlength="8" />
                 <br>
                 <button type="submit" class="my-4 p-2 bg-gray-100 text-black rounded hover:bg-gray-500">Register</button>
             </form>
+                <div id="responseMessage" class="mt-4 text-lg text-gray-200"></div>
         </section>
             </br>
         <!-- Login Form -->
@@ -44,10 +45,10 @@
             <h2 class="text-xl font-semibold mb-4">Login</h2>
             <form action="/login" method="POST">
                 <label for="login-username" class="block text-sm font-medium">Username:</label>
-                <input type="text" id="login-username" name="username" required />
+                <input type="text" id="login-username" name="username" class="text-black" required />
                 <br>
                 <label for="login-password" class="block text-sm font-medium">Password:</label>
-                <input type="password" id="login-password" name="password" required />
+                <input type="password" id="login-password" name="password" class="text-black" required />
                 <br>
                 <button type="submit" class="my-4 p-2 bg-gray-100 text-black rounded hover:bg-gray-500">Login</button>
             </form>
@@ -58,7 +59,7 @@
         <section id="logout">
             <h2>Logout</h2>
             <form action="/logout" method="POST">
-                <button type="submit">Logout button</button>
+                 <button type="submit" class="my-4 p-2 bg-gray-100 text-black rounded hover:bg-gray-500">Logout</button>
             </form>
         </section>
         </br>

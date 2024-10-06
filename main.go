@@ -42,6 +42,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 		HashedPassword: hashedPassword,
 	}
 
+	w.Header().Set("Content-Type", "text/plain")
 	fmt.Fprintln(w, "User registered!")
 }
 

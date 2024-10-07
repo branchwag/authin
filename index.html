@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issa App</title>
     <link rel="stylesheet" href="styles.css"> <!-- Optional, for external CSS -->
-    <script defer src="scripts.js"></script> <!-- Optional, for external JS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-gray-50">
@@ -28,14 +27,14 @@
         <!-- Registration Form -->
         <section id="register" class="mx-2 w-1/2 p-4 bg-gray-900 rounded-lg shadow-lg">
             <h2 class="text-xl font-semibold mb-4">Register</h2>
-            <form id="registerForm">
+            <form id="registerForm" onsubmit="return false;">
                 <label for="username" class="block text-sm font-medium">Username:</label>
                 <input type="text" id="username" name="username" class="text-black" required minlength="8" />
                 <br>
                 <label for="password" class="block text-sm font-medium">Password:</label>
                 <input type="password" id="password" name="password" class="text-black" required minlength="8" />
                 <br>
-                <button type="submit" class="my-4 p-2 bg-gray-100 text-black rounded hover:bg-gray-500">Register</button>
+                <button type="button" id="registerButton" class="my-4 p-2 bg-gray-100 text-black rounded hover:bg-gray-500">Register</button>
             </form>
                 <div id="responseMessage" class="mt-4 text-lg text-gray-200"></div>
         </section>
@@ -72,6 +71,50 @@
     <footer>
         <p>&copy; 2024 Authentication App. All Rights Reserved.</p>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const button = document.getElementById('registerButton');
+            const responseDiv = document.getElementById('responseMessage');
+
+            function handleRegister(event) {
+                event.preventDefault();
+                
+                const formData = new FormData(form);
+                
+                fetch('/register', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log('Response:', data);
+                    responseDiv.textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    responseDiv.textContent = 'An error occurred. Please try again.';
+                });
+
+                return false;
+            }
+
+            // Prevent form submission
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                return false;
+            };
+
+            // Handle button click
+            button.onclick = handleRegister;
+
+            // Additional safeguard
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRegister(e);
+            });
+        });
+    </script>
 </body>
 </html>
 

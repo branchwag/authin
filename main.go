@@ -18,22 +18,20 @@ var users = map[string]Login{}
 
 func register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		err := http.StatusMethodNotAllowed
-		http.Error(w, "Invalid method", err)
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
 		return
 	}
 
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+
 	if len(username) < 8 || len(password) < 8 {
-		err := http.StatusNotAcceptable
-		http.Error(w, "Invalid username/password", err)
+		http.Error(w, "Invalid username/password", http.StatusNotAcceptable)
 		return
 	}
 
 	if _, ok := users[username]; ok {
-		err := http.StatusConflict
-		http.Error(w, "User already exists", err)
+		http.Error(w, "User already exists", http.StatusConflict)
 		return
 	}
 
@@ -43,7 +41,8 @@ func register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "text/plain")
-	fmt.Fprintln(w, "User registered!")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "User registered successfully!")
 }
 
 func login(w http.ResponseWriter, r *http.Request) {

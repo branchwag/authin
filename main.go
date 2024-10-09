@@ -25,7 +25,7 @@ func init() {
 	var err error
 	protectedTmpl, err = template.ParseFiles("./protected.html")
 	if err != nil {
-		fmt.Sprintf("Failed to parse template: %v", err)
+		panic(fmt.Sprintf("Failed to parse template: %v", err))
 	}
 }
 

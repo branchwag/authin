@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -84,7 +86,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 	users[username] = user
 
 	//fmt.Fprintln(w, "Login successful!")
-	http.Redirect(w, r, "/protected", http.StatusSeeOther)
+	//http.Redirect(w, r, "/protected", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/protected?csrf_token=%s&username=%s", csrfToken, username), http.StatusSeeOther)
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -123,29 +126,36 @@ func protected(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Method == http.MethodGet {
+		csrfToken := r.URL.Query().Get("csrf_token")
+		username := r.URL.Query().Get("username")
+
+		postData := url.Values{}
+		postData.Set("csrf_token", csrfToken)
+		postData.Set("username", username)
+
+		newRequest, err := http.NewRequest(http.MethodPost, r.URL.Path, strings.NewReader(postData.Encode()))
+		if err != nil {
+			http.Error(w, "Error creating request", http.StatusInternalServerError)
+			return
+		}
+
+		newRequest.Header = r.Header
+		newRequest.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		newRequest.Header.Set("X-CSRF-Token", csrfToken)
+
+		r = newRequest
+	}
+
 	if err := Authorize(r); err != nil {
 		er := http.StatusUnauthorized
 		http.Error(w, "Unauthorized", er)
 		return
 	}
 
-	//username := r.FormValue("username")
-	sessionToken, err := r.Cookie("session_token")
-	if err != nil {
-		http.Error(w, "No session token found", http.StatusUnauthorized)
-		return
-	}
-
-	var username string
-	for uname, user := range users {
-		if user.SessionToken == sessionToken.Value {
-			username = uname
-			break
-		}
-	}
-
+	username := r.FormValue("username")
 	if username == "" {
-		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		http.Error(w, "Username not provided", http.StatusBadRequest)
 		return
 	}
 

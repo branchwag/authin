@@ -83,7 +83,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 	user.CSRFToken = csrfToken
 	users[username] = user
 
-	fmt.Fprintln(w, "Login successful!")
+	//fmt.Fprintln(w, "Login successful!")
+	http.Redirect(w, r, "/protected", http.StatusSeeOther)
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -116,7 +117,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func protected(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodGet && r.Method != http.MethodPost {
 		err := http.StatusMethodNotAllowed
 		http.Error(w, "Invalid request method", err)
 		return
@@ -128,8 +129,28 @@ func protected(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username := r.FormValue("username")
-	fmt.Fprintf(w, "CSRF validation successful! Welcome, %s", username)
+	//username := r.FormValue("username")
+	sessionToken, err := r.Cookie("session_token")
+	if err != nil {
+		http.Error(w, "No session token found", http.StatusUnauthorized)
+		return
+	}
+
+	var username string
+	for uname, user := range users {
+		if user.SessionToken == sessionToken.Value {
+			username = uname
+			break
+		}
+	}
+
+	if username == "" {
+		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		return
+	}
+
+	//fmt.Fprintf(w, "CSRF validation successful! Welcome, %s", username)
+	fmt.Fprintf(w, "Welcome to the protected area, %s!", username)
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {

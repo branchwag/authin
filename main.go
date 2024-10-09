@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"net/url"
@@ -17,6 +18,16 @@ type Login struct {
 }
 
 var users = map[string]Login{}
+
+var protectedTmpl *template.Template
+
+func init() {
+	var err error
+	protectedTmpl, err = template.ParseFiles("./protected.html")
+	if err != nil {
+		fmt.Sprintf("Failed to parse template: %v", err)
+	}
+}
 
 func register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -160,7 +171,13 @@ func protected(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//fmt.Fprintf(w, "CSRF validation successful! Welcome, %s", username)
-	fmt.Fprintf(w, "Welcome to the protected area, %s!", username)
+	//fmt.Fprintf(w, "Welcome to the protected area, %s!", username)
+	w.Header().Set("Content-Type", "text/html")
+	err := protectedTmpl.Execute(w, struct{ Username string }{Username: username})
+	if err != nil {
+		http.Error(w, "Error rendering template", http.StatusInternalServerError)
+		return
+	}
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {
